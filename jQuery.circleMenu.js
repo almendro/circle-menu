@@ -13,7 +13,10 @@
             step_out: 20,
             step_in: -20,
             trigger: 'hover',
-            transition_function: 'ease'
+            transition_function: 'ease',
+            div: false,
+            item_class: 'item',
+            submenu_class: 'submenu'
         };
 
     function vendorPrefixes(items,prop,value){
@@ -22,10 +25,11 @@
         });
     }
 
+		// ACA EMPIEZA TODO
     function CircleMenu(element, options){
         this._timeouts = [];
-        this.element = $(element);
-        this.options = $.extend({}, defaults, options);
+        this.element = jQuery(element);
+        this.options = jQuery.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
         this.init();
@@ -46,7 +50,7 @@
                 'top-half':[180,360],
                 'top-left':[270,180],
                 'top-right':[270,360],
-                'full':[-90,270-Math.floor(360/(self.element.children('li').length - 1))],
+                'full':[-90,270-Math.floor(360/(  ( self.options.div? jQuery('.'+self.options.item_class, self.element ).length : self.element.children('li').length ) - 1))],
                 'bottom-right':[0,90]
             },
             dir;
@@ -62,12 +66,25 @@
             }
         }
 
-        self.menu_items = self.element.children('li:not(:first-child)');
+				//console.log('self '+jQuery(self));
+				console.log('div '+self.options.div);
+				console.log('item_class ' + self.options.item_class );
+				if( self.options.div == true )
+				{
+					self.menu_items = jQuery('.'+self.options.item_class+':not(:first-child)', self.element );
+				}
+				else
+				{
+					self.menu_items = self.element.children('li:not(:first-child)');
+				}
+        
+        console.log(self.menu_items);
+        
         self.initCss();
         self.item_count = self.menu_items.length;
         self._step = (self.options.angle.end - self.options.angle.start) / (self.item_count-1);
         self.menu_items.each(function(index){
-            var $item = $(this),
+            var $item = jQuery(this),
                 angle = (self.options.angle.start + (self._step * index)) * (Math.PI/180),
                 x = Math.round(self.options.circle_radius * Math.cos(angle)),
                 y = Math.round(self.options.circle_radius * Math.sin(angle));
@@ -92,8 +109,16 @@
             }
         });
 
-        self.submenus = self.menu_items.children('ul');
-        self.submenus.circleMenu($.extend({},self.options,{depth:self.options.depth+1}));
+				if ( self.options.div == true )
+				{
+					self.submenus = jQuery('.'+self.options.submenu_class, self.element );
+				}
+				else
+				{
+	        self.submenus = self.menu_items.children('ul');
+        }
+        
+        self.submenus.circleMenu(jQuery.extend({},self.options,{depth:self.options.depth+1}));
 
         self.trigger('init');
     };
@@ -116,7 +141,15 @@
                 self.close();
             });
         }else if(self.options.trigger === 'click'){
-            self.element.children('li:first-child').on('click',function(evt){
+        
+        		var item_primero;
+        		if ( self.options.div == true ) {
+        			item_primero = jQuery('.'+self.options.item_class+':first-child', self.element );
+        		} else {
+		        	item_primero = self.element.children('li:first-child');
+        		}
+        		
+            item_primero.on('click',function(evt){
                 evt.preventDefault();
                 if(self._state === 'closed' || self._state === 'closing'){
                     self.open();
@@ -142,10 +175,10 @@
         if(self.options.step_out >= 0){
             set = self.menu_items;
         }else{
-            set = $(self.menu_items.get().reverse());
+            set = jQuery(self.menu_items.get().reverse());
         }
         set.each(function(index){
-            var $item = $(this);
+            var $item = jQuery(this);
 
             self._timeouts.push(setTimeout(function(){
                 $item.css({
@@ -175,10 +208,10 @@
             if(self.options.step_in >= 0){
                 set = self.menu_items;
             }else{
-                set = $(self.menu_items.get().reverse());
+                set = jQuery(self.menu_items.get().reverse());
             }
             set.each(function(index){
-                var $item = $(this);
+                var $item = jQuery(this);
 
                 self._timeouts.push(setTimeout(function(){
                     $item.css({top:0,left:0});
@@ -238,7 +271,16 @@
             'padding': 0,
             'width': self.options.item_diameter+'px'
         });
-        $items = self.element.children('li');
+        
+        if ( self.options.div == true ) 
+        {
+        	$items = jQuery('.'+self.options.item_class, self.element );
+        }
+        else 
+        {
+					$items = self.element.children('li');        
+        }
+        
         $items.attr('style','');
         $items.css({
             'display': 'block',
@@ -250,7 +292,16 @@
             'z-index': 1,
             'opacity': ''
         });
-        self.element.children('li:first-child').css({'z-index': 1000-self.options.depth});
+        
+        if (self.options.div == true )
+        {
+        	jQuery('.'+self.options.item_class+':first-child', self.element ).css({'z-index': 1000-self.options.depth});
+        }
+        else
+        {
+					self.element.children('li:first-child').css({'z-index': 1000-self.options.depth});        
+        }
+        
         self.menu_items.css({
             top:0,
             left:0
@@ -262,9 +313,9 @@
         },0);
     };
 
-    $.fn[pluginName] = function(options){
+    jQuery.fn[pluginName] = function(options){
         return this.each(function(){
-            var obj = $.data(this, 'plugin_'+pluginName),
+            var obj = jQuery.data(this, 'plugin_'+pluginName),
                 commands = {
                 'init':function(){obj.init();},
                 'open':function(){obj.open();},
@@ -274,7 +325,7 @@
                 commands[options]();
             }
             if(!obj){
-                $.data(this, 'plugin_' + pluginName, new CircleMenu(this, options));
+                jQuery.data(this, 'plugin_' + pluginName, new CircleMenu(this, options));
             }
         });
     };

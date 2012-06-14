@@ -1,27 +1,23 @@
 ﻿Circle Menu
 ===========
 
-A customizable jQuery plugin that emulates the menu in the [Path][] application.  Includes a 
-selection animation and various animation options for opening and closing the menu.
+Modificación del menú circular de Zikes http://zikes.github.com/circle-menu/
 
-**[See it in action.][demo]**
+Funcionalidades agregadas:
 
-**[Read the Documentation.][docs]**
+- usar LI o DIVs (o cualquier etiqueta) con una class personalizable
 
-**Compatibility:**
+en las opciones hay que definir
 
-Fully Working:
+{
+	...
+	div: true // por defecto es false, entonces usa LI
+}
 
-* Chrome
-* Firefox
-* Android
-* Opera
+Si 'div' es true entonces
 
-Known Issues:
+busca todos los elementos con el class 'item', pero este class se puede cambiar con el parámetro 'item_class'
 
-* IE 9 
-  * Does not include CSS animations for open/close, as it does not support CSS transitions.
+Los submenús tienen que tener el class 'submenu', también se puede definir con el parámetro 'submenu_class'
 
-[Path]: https://path.com/
-[demo]: http://zikes.github.com/circle-menu/examples/
-[docs]: http://zikes.github.com/circle-menu/
+

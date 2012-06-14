@@ -1,5 +1,7 @@
 ﻿html,body{height:100%;padding:0;margin:0;overflow:hidden;}
-.menu li:first-child {
+.menu li:first-child,
+.menu .item:first-child
+ {
     background:#f00;
     font-weight:bold;
     font-family:arial black;
@@ -9,15 +11,25 @@
     border-width: 2px;
     border-style: solid;
     box-shadow: 0 0 2px 1px #aaa;
+    display:block;
 }
-.menu li {
+.menu li,
+.menu .item
+{
     background:#000;
     color:#fff;
     font-size:25px;
 }
+.menu .item
+{
+	width: 30px;
+	height: 30px;
+}
 .menu a{
     text-decoration: none;
     color:#fff;
+    display:block;
+
 }
 #menu16 {
     -webkit-transform-origin: 17px 17px;
@@ -71,12 +83,21 @@ nav a.active{
     background:blue;
     color:#fff;
 }
-#examples {
+#examples
+{
+	position: relative;
     margin-left:200px;
 }
+#examples-div 
+{
+position: relative;
+	margin-left:500px;
+}
 
-#examples > div {
-    display:none;
+#examples > div 
+#examples-div > div 
+{
+   /*display:none;*/
     width:300px;
     height:300px;
     border:1px solid black;
@@ -86,7 +107,9 @@ nav a.active{
 
 .menu{position:absolute;}
 
-#menu2, #menu14, #menu15, #menu16{
+#menu2, #menu14, #menu15, #menu16,
+#menu14div
+{
     left:135px;
     top:135px;
 }
